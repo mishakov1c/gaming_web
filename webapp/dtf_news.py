@@ -19,10 +19,12 @@ def get_dtf_news():
     if html:
         soup = BeautifulSoup(html, 'html.parser')
         all_news = soup.findAll('div', class_ = 'feed__item')
+        result_news = []
         for news in all_news:
             title = news.find('div', class_ = 'content-title')
             try:
                 title = title.text.replace("Статьи редакции", "").strip()
+                # print(title)
             except AttributeError:
                 continue
             url = news.find('a', class_ = 'content-link')['href']
@@ -40,3 +42,7 @@ def save_news(title, url, written):
         new_articles = Articles(title=title, url=url, written=written, author='unknown', is_published = 1)
         db.session.add(new_articles)
         db.session.commit()    
+
+# if __name__ == "__main__":
+#     news = get_dtf_news()
+#     print(news)
