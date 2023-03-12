@@ -15,7 +15,7 @@ def create_app():
 
     @app.route('/')
     def index():
-        title = 'Новости игр'
+        title = 'Geek Space'
         news_list = Articles.query.order_by(Articles.written.desc()).all()
         # news_list = get_dtf_news()
         return render_template('index.html', page_title = title, news_list = news_list)
