@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from webapp.article_model import db, Articles
+from webapp.model import db, Articles
 
 def get_html(url):
     try:
