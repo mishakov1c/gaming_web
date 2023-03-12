@@ -11,8 +11,6 @@ class Articles(db.Model):
     is_published = db.Column(db.Integer, default=0, nullable=False)
     text = db.Column(db.Text, nullable=True)
     number_of_seen = db.Column(db.Integer, default=0, nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    pic = db.Column(db.String,  nullable=True)
 
     def __repr__(self) -> str:
         return '<News {} {}>'.format(self.title, self.author)
