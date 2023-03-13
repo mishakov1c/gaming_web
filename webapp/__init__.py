@@ -33,6 +33,16 @@ def create_app():
         login_form = LoginForm()
         return render_template('login.html', page_title=title, form=login_form)
     
+    @app.route('/save_article/<int:post_id>')
+    def save_article():
+        title = 'Сохранение статьи'
+        return title
+        # new_articles = Articles(title=title, url=url, written=written, author='unknown', is_published = 1)
+        # db.session.add(new_articles)
+        # db.session.commit()
+        # return render_template('login.html', page_title=title, form=login_form)
+    
+
     with app.app_context():
         db.create_all()
 
