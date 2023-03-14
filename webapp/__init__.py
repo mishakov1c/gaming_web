@@ -45,7 +45,19 @@ def create_app():
     @app.route('/<int:post_id>')
     def post(post_id):
         post = get_post(post_id)
-        return render_template('post.html', page_title = post.title, post_text=post.text) 
+        return render_template('post.html', page_title = post.title, post_text=post.text)
+
+    @app.route('/save_article', methods=['POST'])
+    def save_article():
+        if request.method == 'POST':
+            print(request.form)  
+            return ('', 204)  
+        # title = 'Сохранение статьи'
+        # return title
+        # new_articles = Articles(title=title, url=url, written=written, author='unknown', is_published = 1)
+        # db.session.add(new_articles)
+        # db.session.commit()
+        # return render_template('login.html', page_title=title, form=login_form) 
 
     @app.route('/login')
     def login():
@@ -82,15 +94,6 @@ def create_app():
             return 'Привет, Админ!'
         else:
             return 'Ты не Админ!'
-
-    @app.route('/save_article', methods=['POST'])
-    def save_article():
-        title = 'Сохранение статьи'
-        return title
-        # new_articles = Articles(title=title, url=url, written=written, author='unknown', is_published = 1)
-        # db.session.add(new_articles)
-        # db.session.commit()
-        # return render_template('login.html', page_title=title, form=login_form)
     
 
     with app.app_context():
