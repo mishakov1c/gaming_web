@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user
 from webapp.forms import LoginForm
 from webapp.model import db, Articles, User
+# from webapp.dtf_news import get_dtf_news
 
 def get_post(post_id):
     post = Articles.query.get_or_404(post_id)
@@ -29,6 +30,7 @@ def create_app():
         print('Button_text = ', text)
         print()
         news_list = Articles.query.order_by(Articles.written.desc()).all()
+        # news_list = get_dtf_news()
         return render_template('index.html', page_title = title, news_list = news_list)
     
     @app.route('/edit/<int:post_id>')
@@ -72,7 +74,7 @@ def create_app():
         return redirect(url_for('index'))
     
 
-    @app.route('/save_article/<int:post_id>')
+    @app.route('/save_article', methods=['POST'])
     def save_article():
         title = 'Сохранение статьи'
         return title
