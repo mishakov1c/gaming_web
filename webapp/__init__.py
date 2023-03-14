@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_login import LoginManager, login_user, logout_user
 from webapp.forms import LoginForm
 from webapp.model import db, Articles, User
@@ -24,11 +24,19 @@ def create_app():
     @app.route('/')
     def index():
         title = 'Geek Space'
+        text = request.args.get('button_text')
+        print()
+        print('Button_text = ', text)
+        print()
         news_list = Articles.query.order_by(Articles.written.desc()).all()
         return render_template('index.html', page_title = title, news_list = news_list)
     
     @app.route('/edit/<int:post_id>')
     def edit_post(post_id):
+        text = request.args.get('button_text')
+        print()
+        print('Button_text = ', text)
+        print()
         post = get_post(post_id)
         return render_template('edit_post.html', page_title = post.title, post_text=post.text, post_id=post_id)
 
