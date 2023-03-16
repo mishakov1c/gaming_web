@@ -42,7 +42,11 @@
               {% endfor %}
           </div>
           <div class="col-1">
-            <button class="my-button" onclick="window.location.href='login'">Логин</button>
+            {% if current_user.is_authenticated %}
+              <button class="my-button" onclick="window.location.href='logout'">Выйти из системы</button>
+            {% else %}
+              <button class="my-button" onclick="window.location.href='login'">Войти в систему</button>
+            {% endif %}
           </div> 
       </div>
     </div>
