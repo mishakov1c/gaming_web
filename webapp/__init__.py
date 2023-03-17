@@ -1,8 +1,8 @@
+import datetime
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from webapp.forms import LoginForm, ArticleForm
 from webapp.model import db, Articles, User
-# from webapp.dtf_news import get_dtf_news
 
 
 def get_post(post_id):
@@ -24,45 +24,77 @@ def create_app():
 
     @app.route('/')
     def index():
-        title = 'Geek Space'
         news_list = Articles.query.order_by(Articles.written.desc()).all()
-        return render_template('index.html', page_title = title, news_list = news_list, current_user=current_user)
+        print(news_list)
+        return render_template('index.html', news_list = news_list, current_user=current_user)
     
-    @app.route('/edit/<int:post_id>')
-    def edit_post(post_id):
-        # text = request.args.get('button_text')
-        post = get_post(post_id)
-        form = ArticleForm(title=post.title, text=post.text)
-       
-        # print(post.text)
-        return render_template('edit_post.html', page_title=post.title,
-                            post_text=post.text, id=post_id, post_url=post.url, form=form)
 
     @app.route('/<int:post_id>')
     def post(post_id):
         post = get_post(post_id)
-        return render_template('post.html', page_title=post.title, post_text=post.text)
+        return render_template('post.html', post=post)
 
-    @app.route('/save_article', methods=['POST'])
-    def save_article():
+    @app.route('/create_post', methods=('GET', 'POST'))
+    def create_post():
+        # count = db.session.query(db.func.max(Articles.id)).first()[0]
+        # print('max', count)
         if request.method == 'POST':
-            print(request.form.get) 
-            title = request.form.get('title')
-            # title = request.form.get('title')
-            # title = request.form.get('title')
-            # title = request.form.get('title')
-            # title = request.form.get('title')
-            # title = request.form.get('title')
-            # title = request.form.get('title')
-            print(title)
-            return ('', 204) 
-        # title = 'Сохранение статьи'
-        # return title
-        # new_articles = Articles(title=title, url=url, written=written,
-        # author=author, is_published=is_published, text=text, description=description)
-        # db.session.add(new_articles)
-        # db.session.commit()
-        # return render_template('login.html', page_title=title, form=login_form)
+            title = request.form['title']
+            content = request.form['content']
+            description = request.form['description']
+            author = request.form['author']
+            # is_published = 1 if request.form['is_published'] else 0
+            
+            written_string = request.form['written']
+            print(request.form)
+            written = datetime.datetime.strptime(written_string, '%Y-%m-%d')
+            url = request.form['url']
+
+            if not title:
+                flash('Title is required!')
+            else:
+                new_article = Articles(title=title, url=url, written=written,
+                author=author, text=content, description=description)
+                # , is_published=is_published)
+                db.session.add(new_article)
+                db.session.commit()
+            return redirect(url_for('index'))
+
+        return render_template('create_post.html')
+
+
+    @app.route('/<int:id>/edit_post', methods=('GET', 'POST'))
+    def edit_post(id):
+        post = get_post(id)
+        print(post.url)
+        if request.method == 'POST':
+            title = request.form['title']
+            content = request.form['content']
+            description = request.form['description']
+            author = request.form['author']
+            # is_published = 1 if request.form['is_published'] else 0
+            
+            written_string = request.form['written']
+            print(request.form)
+            written = datetime.datetime.strptime(written_string, '%Y-%m-%d')
+            url = request.form['url']
+
+            if not title:
+                flash('Title is required!')
+            else:
+                post.title = title
+                post.url = url
+                post.written = written
+                post.author = author
+                post.text = content
+                post.description = description
+                # post.is_published = is_published
+                db.session.commit()
+                
+                return redirect(url_for('index'))
+
+        return render_template('edit_post.html', post=post)
+    
 
     @app.route('/login')
     def login():

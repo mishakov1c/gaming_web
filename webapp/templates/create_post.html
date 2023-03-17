@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Создание новой статьи {% endblock %}</h1>
+<form method="post">
+    <div class="row">
+        <div class="col-8">
+        
+            <div class="form-group">
+                <label for="title">Заголовок</label>
+                <input type="text" name="title"
+                    placeholder="Заголовок" class="form-control"
+                    value="{{ request.form['title'] }}"></input>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Текст статьи</label>
+                <textarea name="content" placeholder="Текст статьи"
+                        class="form-control" rows = "25">{{ request.form['content'] }}</textarea>
+            </div>
+
+        </div>
+
+        <div class="col-4">
+            <div class="form-group">
+                <label for="url">Ссылка</label>
+                <input type="url" name="url"
+                    placeholder="url" class="form-control"
+                    value="{{ request.form['url'] }}"></input>
+            </div>
+
+            <div class="form-group">
+                <label for="author">Автор</label>
+                <input type="text" name="author"
+                    placeholder="author" class="form-control"
+                    value="{{ request.form['author'] }}"></input>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Краткое описание</label>
+                <input type="text" name="description"
+                    placeholder="description" class="form-control"
+                    value="{{ request.form['description'] }}"></input>
+            </div>
+
+            <div class="form-group">
+                <label for="written">written</label>
+                <input type="date" name="written"
+                    placeholder="written" class="form-control"
+                    value="{{ request.form['written'] }}"></input>
+            </div>
+
+            <div class="form-check form-switch">
+                <label for="is_published">Опубликована</label>
+                <input type="checkbox" role="switch" name="is_published"
+                        placeholder="is_published" class="form-check-input"
+                        value="{{ request.form['is_published'] }}"></input>
+            </div> 
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Записать</button>
+            </div>
+
+        </div>
+    </div>
+</form>
+<hr>
+{% endblock %}
+
