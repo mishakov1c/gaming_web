@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from webapp.model import db, Articles
+from model import db, Articles
 
 def get_html(url):
     try:
@@ -19,12 +19,10 @@ def get_dtf_news():
     if html:
         soup = BeautifulSoup(html, 'html.parser')
         all_news = soup.findAll('div', class_ = 'feed__item')
-        result_news = []
         for news in all_news:
             title = news.find('div', class_ = 'content-title')
             try:
                 title = title.text.replace("Статьи редакции", "").strip()
-                # print(title)
             except AttributeError:
                 continue
             url = news.find('a', class_ = 'content-link')['href']
@@ -43,6 +41,6 @@ def save_news(title, url, written):
         db.session.add(new_articles)
         db.session.commit()    
 
-# if __name__ == "__main__":
-#     news = get_dtf_news()
-#     print(news)
+if __name__ == "__main__":
+    news = get_dtf_news()
+    print(news)

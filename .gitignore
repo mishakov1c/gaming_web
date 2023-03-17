@@ -2,3 +2,5 @@ env/
 config.py
 *.db
 *.pyc
+.vscode/
+dtf_news.py
