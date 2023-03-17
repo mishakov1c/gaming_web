@@ -1,12 +1,14 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from webapp.forms import LoginForm
+from webapp.forms import LoginForm, ArticleForm
 from webapp.model import db, Articles, User
 # from webapp.dtf_news import get_dtf_news
+
 
 def get_post(post_id):
     post = Articles.query.get_or_404(post_id)
     return post
+
 
 def create_app():
     app = Flask(__name__)
@@ -21,43 +23,49 @@ def create_app():
     def load_user(user_id):
         return User.query.get(user_id)
 
-
     @app.route('/')
     def index():
         title = 'Geek Space'
-        text = request.args.get('button_text')
-        print()
-        print('Button_text = ', text)
-        print()
         news_list = Articles.query.order_by(Articles.written.desc()).all()
         # news_list = get_dtf_news()
-        return render_template('index.html', page_title = title, news_list = news_list)
-    
+        return render_template('index.html', page_title=title,
+                               news_list=news_list)
+   
     @app.route('/edit/<int:post_id>')
     def edit_post(post_id):
-        text = request.args.get('button_text')
-        print()
-        print('Button_text = ', text)
-        print()
+        # text = request.args.get('button_text')
         post = get_post(post_id)
-        return render_template('edit_post.html', page_title = post.title, post_text=post.text, post_id=post_id)
+        form = ArticleForm(title=post.title, text=post.text)
+       
+        # print(post.text)
+        return render_template('edit_post.html', page_title=post.title,
+                            post_text=post.text, id=post_id, post_url=post.url, form=form)
 
     @app.route('/<int:post_id>')
     def post(post_id):
         post = get_post(post_id)
-        return render_template('post.html', page_title = post.title, post_text=post.text)
+        return render_template('post.html', page_title=post.title, post_text=post.text)
 
     @app.route('/save_article', methods=['POST'])
     def save_article():
         if request.method == 'POST':
-            print(request.form)  
-            return ('', 204)  
+            print(request.form.get) 
+            title = request.form.get('title')
+            # title = request.form.get('title')
+            # title = request.form.get('title')
+            # title = request.form.get('title')
+            # title = request.form.get('title')
+            # title = request.form.get('title')
+            # title = request.form.get('title')
+            print(title)
+            return ('', 204) 
         # title = 'Сохранение статьи'
         # return title
-        # new_articles = Articles(title=title, url=url, written=written, author='unknown', is_published = 1)
+        # new_articles = Articles(title=title, url=url, written=written,
+        # author=author, is_published=is_published, text=text, description=description)
         # db.session.add(new_articles)
         # db.session.commit()
-        # return render_template('login.html', page_title=title, form=login_form) 
+        # return render_template('login.html', page_title=title, form=login_form)
 
     @app.route('/login')
     def login():
@@ -66,7 +74,7 @@ def create_app():
         title = 'Авторизация'
         login_form = LoginForm()
         return render_template('login.html', page_title=title, form=login_form)
-    
+
     @app.route('/process-login', methods=['POST'])
     def process_login():
         form = LoginForm()
@@ -77,16 +85,16 @@ def create_app():
                 login_user(user)
                 flash('Вы успешно вошли на сайт')
                 return redirect(url_for('index'))
-            
+
         flash('Неправильные имя или/и пароль')
         return redirect(url_for('login'))
-    
+
     @app.route('/logout')
     def logout():
         flash('Вы успешно вышли из аккаунта.')
         logout_user()
         return redirect(url_for('index'))
-    
+
     @app.route('/admin')
     @login_required
     def admin_index():
@@ -94,7 +102,6 @@ def create_app():
             return 'Привет, Админ!'
         else:
             return 'Ты не Админ!'
-    
 
     with app.app_context():
         db.create_all()

@@ -19,7 +19,7 @@ def get_dtf_news():
     if html:
         soup = BeautifulSoup(html, 'html.parser')
         all_news = soup.findAll('div', class_ = 'feed__item')
-        result_news = []
+        # result_news = []
         for news in all_news:
             title = news.find('div', class_ = 'content-title')
             try:

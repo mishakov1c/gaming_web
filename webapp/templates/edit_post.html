@@ -17,14 +17,30 @@
       </div>
       <div class="row">
         <div class="col-md-8">
-          <h1>Редактирование статьи</h1>
-          <h2>{{ page_title }}</h2>
-          <p>{{post_text}}</p>
+          <div class="mb-3">
+            {{ form.title.label }}
+            {{ form.title() }}
+          </div>
+          <div class="mb-3">
+            {{ form.text.label }}
+            {{ form.text() }}
+          </div>
+          <!-- <div class="mb-3">
+            Заголовок статьи<br>
+            <input class="form-control form-control-lg" type="text" placeholder=" {{ page_title }}" aria-label=".form-control-lg example">
+          </div> -->
+          <!-- <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="50">{{ post_text }}</textarea>
+          </div> -->
+          <!-- <h4>Редактирование статьи</h4> -->
+          <!-- <h2>{{ page_title }}</h2>
+          <p>{{ post_text }}</p> -->
         </div>
         <div class="col-md-4">
           <div class="mb-5">
             <!-- <a href="../../{{post_id}}" class="btn btn-primary btn-lg px-4">Сохранить изменения</a> -->
-            <button onclick="performPost()" class="btn btn-primary btn-lg px-4">Сохранить изменения</button>
+            <button onclick="performPost( '{{ title }}',  '{{ post_url }}')" class="btn btn-primary btn-lg px-4">Сохранить изменения</button>
           </div>
         </div>
       </div>
@@ -36,11 +52,11 @@
   <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
   
   <script>
-    function performPost() {
+    function performPost(page_title, post_text) {
       $.ajax ({
         type: "POST",
         url: "{{ url_for('save_article') }}",
-        data: {"name" : "Jim"},           
+        data: {"title" : page_title , "post_text" : post_text, "url" : "url", "written" : "written", "author" : "unknown", "is_published" : 0},          
       })
     }
   </script>
