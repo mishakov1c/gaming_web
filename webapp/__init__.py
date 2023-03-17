@@ -14,7 +14,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     db.init_app(app)
-
     login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = 'login'
@@ -27,10 +26,8 @@ def create_app():
     def index():
         title = 'Geek Space'
         news_list = Articles.query.order_by(Articles.written.desc()).all()
-        # news_list = get_dtf_news()
-        return render_template('index.html', page_title=title,
-                               news_list=news_list)
-   
+        return render_template('index.html', page_title = title, news_list = news_list, current_user=current_user)
+    
     @app.route('/edit/<int:post_id>')
     def edit_post(post_id):
         # text = request.args.get('button_text')
