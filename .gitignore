@@ -3,4 +3,4 @@ config.py
 *.db
 *.pyc
 .vscode/
-dtf_news.py
+*.old

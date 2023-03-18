@@ -10,6 +10,7 @@ class Articles(db.Model):
     author = db.Column(db.String, nullable=False)
     url = db.Column(db.String, unique=True, nullable=False)
     written = db.Column(db.DateTime, nullable=False)
+    edited = db.Column(db.DateTime, nullable=False)
     is_published = db.Column(db.Integer, default=0, nullable=False)
     text = db.Column(db.Text, nullable=True)
     number_of_seen = db.Column(db.Integer, default=0, nullable=False)
