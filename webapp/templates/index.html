@@ -18,9 +18,11 @@
         </a>
         <ul class="nav nav-pills">
           <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+          {% if current_user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('create_post')}}">New Post</a>
           </li>
+          {% endif %}
         </ul>
         <div class="col-1">
             {% if current_user.is_authenticated %}
