@@ -13,3 +13,11 @@ class LoginForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired()], render_kw={'class': "form-control"})
     password = PasswordField('Пароль', validators=[DataRequired()], render_kw={'class': "form-control"})
     submit = SubmitField('Отправить', render_kw={'class': "btn btn-primary"})
+
+
+class RegisterForm(FlaskForm):
+    username = StringField('Имя пользователя', validators=[DataRequired()], render_kw={'class': "form-control"})
+    email = StringField('Имейл', validators=[DataRequired()], render_kw={'class': "form-control"})
+    password = PasswordField('Пароль', validators=[DataRequired()], render_kw={'class': "form-control"})
+    confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired()], render_kw={'class': "form-control"})
+    submit = SubmitField('Зарегистрироваться', render_kw={'class': "btn btn-primary"})
