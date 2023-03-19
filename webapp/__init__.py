@@ -48,7 +48,7 @@ def create_app():
     def create_post():
         author = current_user.username
         written = datetime.date.today()
-        written_string = datetime.datetime.strftime(written, '%Y-%m-%d')
+        written_string = datetime.date.strftime(written, '%Y-%m-%d')
         url = new_post_url()
 
         if request.method == 'POST':
@@ -74,8 +74,8 @@ def create_app():
     def edit_post(id):
         post = get_post(id)
         written = post.written
-        written_string = datetime.datetime.strftime(written, '%Y-%m-%d')
-        edited = datetime.datetime.strftime(post.edited, '%Y-%m-%d')
+        written_string = datetime.date.strftime(written, '%Y-%m-%d')
+        edited = datetime.date.strftime(post.edited, '%Y-%m-%d')
 
         if request.method == 'POST':
             title = request.form['title']
