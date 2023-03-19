@@ -4,64 +4,81 @@
 <h1>{% block title %} Редактирование "{{ post['title'] }}" {% endblock %}</h1>
 
 <form method="post">
-  <div class="row">
-    <div class="col-8">
-      <div class="form-group">
-          <label for="title">Заголовок</label>
-          <input type="text" name="title" placeholder="Заголовок"
-                class="form-control"
-                value="{{ request.form['title'] or post['title'] }}">
-          </input>
-      </div>
+    
+    <div class="row">
+        
+        <div class="col-8">
+        
+            <div class="form-group">
+                <label for="title">Заголовок</label>
+                <input type="text" name="title" placeholder="Заголовок"
+                    class="form-control"
+                    value="{{ request.form['title'] or post['title'] }}">
+                </input>
+            </div>
 
-      <div class="form-group">
-          <label for="content">Текст статьи</label>
-          <textarea name="content" placeholder="Текст статьи"
+            <div class="form-group">
+                <label for="content">Текст статьи</label>
+                <textarea name="content" placeholder="Текст статьи"
                     class="form-control" rows = "25">{{ request.form['content'] or post['text'] }}</textarea>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="form-group">
-          <label for="url">Ссылка</label>
-          <input type="url" name="url"
-              placeholder="url" class="form-control"
-              value="{{ request.form['url'] }}"></input>
-      </div>
+            </div>
+        </div>
 
-      <div class="form-group">
-          <label for="author">Автор</label>
-          <input type="text" name="author"
-              placeholder="author" class="form-control"
-              value="{{ request.form['author'] or post['author']  }}"></input>
-      </div>
-
-      <div class="form-group">
-          <label for="description">Краткое описание</label>
-          <input type="text" name="description"
-              placeholder="description" class="form-control"
-              value="{{ request.form['description'] or post['description']  }}"></input>
-      </div>
-
-      <div class="form-group">
-          <label for="written">written</label>
-          <input type="date" name="written"
-              placeholder="written" class="form-control"
-              value="{{ request.form['written'] or post['written']  }}"></input>
-      </div>
-
-      <div class="form-check form-switch">
-          <label for="is_published">Опубликована</label>
-          <input type="checkbox" role="switch" name="ispublished"
-                  placeholder="is_published" class="form-check-input"
-                  value="{{ request.form['is_published'] or post['is_published']  }}"></input>
-      </div> 
+        <div class="col-4">
+        
+            <div class="form-group">
+                <label for="description">Краткое описание</label>
+                <textarea type="text" name="description"
+                    placeholder="Краткое описание" class="form-control"
+                    value="{{ request.form['description'] or post['description'] }}" rows="5"></textarea>
+            </div>
       
-      <div class="form-group">
-          <button type="submit" class="btn btn-primary">Записать</button>
-      </div>
+            <div class="form-group">
+                <label for="url">Ссылка</label>
+                <input type="url" name="url"
+                placeholder="url" class="form-control"
+                value="{{ request.form['url'] or post['url'] }}"></input>
+            </div>
 
-  </div>
-  </div>
+            <div class="form-group">
+                <label for="author">Автор</label>
+                <input type="text" name="author"
+                placeholder="author" class="form-control"
+                value="{{ request.form['author'] or post['author']  }}"></input>
+            </div>
+
+            <div class="form-check form-switch">
+                <label for="is_published">Опубликована</label>
+                <input type="checkbox" role="switch" name="ispublished"
+                    placeholder="is_published" class="form-check-input"
+                    value="{{ request.form['is_published'] or post['is_published']  }}"></input>
+            </div>
+            
+            <p></p>
+        
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Записать</button>
+            </div>
+
+            <p></p>
+
+            <div class="form-group">
+                <label for="written">Дата создания</label>
+                <input type="date" name="written"
+                placeholder="written" class="form-control" disabled
+                value="{{ written }}"></input>
+            </div>
+
+            <div class="form-group">
+                <label for="edited">Дата последнего обновления</label>
+                <input type="date" name="edited"
+                placeholder="edited" class="form-control" disabled
+                value="{{ edited }}"></input>
+            </div>
+
+        </div>
+    
+    </div>
 
 </form>
 <hr>
