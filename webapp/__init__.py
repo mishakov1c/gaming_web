@@ -82,7 +82,7 @@ def create_app():
             content = request.form['content']
             description = request.form['description']
             author = request.form['author']
-            # is_published = 1 if request.form['is_published'] else 0
+            # is_published = request.form['is_published']
             
             url = request.form['url']
 
