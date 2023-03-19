@@ -23,14 +23,18 @@
             <a class="nav-link" href="{{url_for('create_post')}}">New Post</a>
           </li>
           {% endif %}
+          {% if not current_user.is_authenticated %}
+            <li>
+              <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='login'">Войти в систему</button></li>
+            <li>
+              <button type="button" class="btn btn-primary" onclick="window.location.href='register'">Регистрация</button>
+            </li>
+          {% else %}
+          <li>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='logout'">Выйти из системы</button>
+          </li>
+          {% endif %}
         </ul>
-        <div class="col-1">
-            {% if current_user.is_authenticated %}
-              <button class="my-button" onclick="window.location.href='logout'">Выйти из системы</button>
-            {% else %}
-              <button class="my-button" onclick="window.location.href='login'">Войти в систему</button>
-            {% endif %}
-        </div> 
       </header>
     </div>  
     <div class="container">
@@ -75,29 +79,3 @@
     -->
   </body>
 </html>
-
-
-<!-- Стили -->
-<style>
-  /* Стиль кнопки Регистрации */
-  .my-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-size: 18px;
-    transition: all 0.3s ease-in-out;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-  }
-  .my-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
-  }
-
-
-  </style>
-  

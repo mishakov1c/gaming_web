@@ -14,7 +14,15 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(128))
     birthday_date = db.Column(db.DateTime)
     avatar = db.Column(db.String, default='https://malvina-group.com/wp-content/uploads/2021/03/16.136.1-Pingvin-v-shapke-400x400.jpg')
+    
+    r"""Первая функция меняет пароль на переданный
+        перед этим его зашифровав.
 
+        Вторая - проверяет с помощью той же генерации шифровки,
+        если пароли одинаковые.
+        
+        Третья - проверяет, является ли пользователь адвминистратором"""
+    
     def set_password(self, password):
         self.password = generate_password_hash(password)
     
