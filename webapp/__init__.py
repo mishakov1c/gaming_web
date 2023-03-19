@@ -2,6 +2,7 @@ import datetime
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_migrate import Migrate
+from webapp.config import MAIN_PAGE
 from webapp.forms import LoginForm, ArticleForm
 from webapp.model import db, Articles, User
 
@@ -37,39 +38,45 @@ def create_app():
         post = get_post(post_id)
         return render_template('post.html', post=post)
 
+    def new_post_url():
+        new_id = db.session.query(db.func.max(Articles.id)).first()[0] + 1
+        new_url = f'{MAIN_PAGE}{new_id}'
+
+        return new_url
+
     @app.route('/create_post', methods=('GET', 'POST'))
     def create_post():
-        # count = db.session.query(db.func.max(Articles.id)).first()[0]
-        # print('max', count)
+        author = current_user.username
+        written = datetime.date.today()
+        written_string = datetime.datetime.strftime(written, '%Y-%m-%d')
+        url = new_post_url()
+
         if request.method == 'POST':
             title = request.form['title']
             content = request.form['content']
             description = request.form['description']
-            author = request.form['author']
-            # is_published = 1 if request.form['is_published'] else 0
-            
-            written_string = request.form['written']
-            print(request.form)
-            written = datetime.datetime.strptime(written_string, '%Y-%m-%d')
-            url = request.form['url']
+            # print(request.form)
 
             if not title:
                 flash('Title is required!')
             else:
                 new_article = Articles(title=title, url=url, written=written,
-                author=author, text=content, description=description)
+                author=author, text=content, description=description, edited=written)
                 # , is_published=is_published)
                 db.session.add(new_article)
                 db.session.commit()
             return redirect(url_for('index'))
 
-        return render_template('create_post.html')
+        return render_template('create_post.html', author=author, written=written_string, url=url)
 
 
     @app.route('/<int:id>/edit_post', methods=('GET', 'POST'))
     def edit_post(id):
         post = get_post(id)
-        print(post.url)
+        written = post.written
+        written_string = datetime.datetime.strftime(written, '%Y-%m-%d')
+        edited = datetime.datetime.strftime(post.edited, '%Y-%m-%d')
+
         if request.method == 'POST':
             title = request.form['title']
             content = request.form['content']
@@ -77,9 +84,6 @@ def create_app():
             author = request.form['author']
             # is_published = 1 if request.form['is_published'] else 0
             
-            written_string = request.form['written']
-            print(request.form)
-            written = datetime.datetime.strptime(written_string, '%Y-%m-%d')
             url = request.form['url']
 
             if not title:
@@ -88,6 +92,7 @@ def create_app():
                 post.title = title
                 post.url = url
                 post.written = written
+                post.edited = datetime.date.today()
                 post.author = author
                 post.text = content
                 post.description = description
@@ -96,7 +101,7 @@ def create_app():
                 
                 return redirect(url_for('index'))
 
-        return render_template('edit_post.html', post=post)
+        return render_template('edit_post.html', post=post, written = written_string, edited = edited)
     
 
     @app.route('/login')
