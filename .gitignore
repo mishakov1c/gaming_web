@@ -1,5 +1,4 @@
 env/
-config.py
 *.db
 *.pyc
 .vscode/
