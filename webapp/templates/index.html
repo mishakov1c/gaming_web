@@ -51,9 +51,11 @@
                 <h2>{{ news.title }}</h2>
               </a>
               <span>{{ news.author }} {{ news.written.strftime('%d.%m.%Y') }}</span>
+              {% if current_user.is_authenticated %}
               <a href="{{ url_for('edit_post', id=news['id']) }}">
                 <span class="badge text-bg-warning">Edit</span>
               </a>
+              {% endif %}
               <hr>
               {% endfor %}
           </div>
