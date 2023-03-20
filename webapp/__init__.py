@@ -40,7 +40,8 @@ def create_app():
         return render_template('post.html', post=post)
 
     def new_post_url():
-        new_id = db.session.query(db.func.max(Articles.id)).first()[0] + 1
+        max_id = db.session.query(db.func.max(Articles.id)).first()[0]
+        new_id = 0 if max_id == None else max_id + 1
         new_url = f'{MAIN_PAGE}{new_id}'
 
         return new_url
@@ -83,7 +84,7 @@ def create_app():
             content = request.form['content']
             description = request.form['description']
             author = request.form['author']
-            # is_published = 1 if request.form['is_published'] else 0
+            # is_published = request.form['is_published']
             
             url = request.form['url']
 
