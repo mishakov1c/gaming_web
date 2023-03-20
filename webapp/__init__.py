@@ -41,7 +41,7 @@ def create_app():
 
     def new_post_url():
         max_id = db.session.query(db.func.max(Articles.id)).first()[0]
-        new_id = 0 if max_id == None else max_id + 1
+        new_id = 1 if max_id == None else max_id + 1
         new_url = f'{MAIN_PAGE}{new_id}'
 
         return new_url
