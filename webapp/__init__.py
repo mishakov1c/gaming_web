@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 
 from webapp.article.views import blueprint as article_blueprint
 from webapp.forms import LoginForm, RegisterForm
-from webapp.model import db, User
+from webapp.db import db, User
 
 
 # Создание web приложения
