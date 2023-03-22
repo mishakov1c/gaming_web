@@ -1,4 +1,4 @@
-from webapp.model import db
+from webapp.db import db
 
 class Articles(db.Model):
     id = db.Column(db.Integer, primary_key = True)
