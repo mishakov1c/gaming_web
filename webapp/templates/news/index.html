@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                    {% for message in messages %}
+                        {{ message }}<br>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}           
+            <h2>Новости</h2>
+            {% for news in news_list%}
+            <a href="{{ news.url }}">
+                <h2>{{ news.title }}</h2>
+            </a>
+                <span>{{ news.author }} {{ news.written.strftime('%d.%m.%Y') }}</span>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('article.edit_post', id=news['id']) }}">
+                <span class="badge text-bg-warning">Edit</span>
+            </a>
+            {% endif %}
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}    
