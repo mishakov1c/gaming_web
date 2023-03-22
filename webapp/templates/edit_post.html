@@ -50,8 +50,10 @@
             <div class="form-check form-switch">
                 <label for="is_published">Опубликована</label>
                 <input type="checkbox" role="switch" name="is_published"
-                    placeholder="is_published" class="form-check-input"
-                    value="{{ request.form['is_published'] or post['is_published']  }}"></input>
+                    class="form-check-input"
+                    {% if post.is_published %} checked
+                    {%endif%}
+                    value="{{ request.form['is_published'] or post['is_published'] }}"></input>
             </div>
             
             <p></p>
