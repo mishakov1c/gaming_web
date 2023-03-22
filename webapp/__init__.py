@@ -1,15 +1,12 @@
-import datetime
-from flask import Flask, flash, redirect, render_template, request, url_for
+# import datetime
+from flask import Flask, flash, redirect, render_template, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_migrate import Migrate
-from webapp.config import MAIN_PAGE
-from webapp.forms import LoginForm, ArticleForm, RegisterForm
-from webapp.model import db, Articles, User
 
+from webapp.article.views import blueprint as article_blueprint
+from webapp.forms import LoginForm, RegisterForm
+from webapp.model import db, User
 
-def get_post(post_id):
-    post = Articles.query.get_or_404(post_id)
-    return post
 
 # Создание web приложения
 def create_app():
@@ -22,88 +19,12 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'login'
 
+    app.register_blueprint(article_blueprint)
+
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(user_id)
-
-# Переход на главную страницу
-    @app.route('/')
-    def index():
-        news_list = Articles.query.order_by(Articles.written.desc()).all()
-        print(news_list)
-        return render_template('index.html', news_list = news_list, current_user=current_user)
     
-
-    @app.route('/<int:post_id>')
-    def post(post_id):
-        post = get_post(post_id)
-        return render_template('post.html', post=post)
-
-    def new_post_url():
-        max_id = db.session.query(db.func.max(Articles.id)).first()[0]
-        new_id = 1 if max_id == None else max_id + 1
-        new_url = f'{MAIN_PAGE}{new_id}'
-
-        return new_url
-
-    @app.route('/create_post', methods=('GET', 'POST'))
-    def create_post():
-        author = current_user.username
-        written = datetime.date.today()
-        written_string = datetime.date.strftime(written, '%Y-%m-%d')
-        url = new_post_url()
-
-        if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['content']
-            description = request.form['description']
-            # print(request.form)
-
-            if not title:
-                flash('Title is required!')
-            else:
-                new_article = Articles(title=title, url=url, written=written,
-                author=author, text=content, description=description, edited=written)
-                # , is_published=is_published)
-                db.session.add(new_article)
-                db.session.commit()
-            return redirect(url_for('index'))
-
-        return render_template('create_post.html', author=author, written=written_string, url=url)
-
-
-    @app.route('/<int:id>/edit_post', methods=('GET', 'POST'))
-    def edit_post(id):
-        post = get_post(id)
-        written = post.written
-        written_string = datetime.date.strftime(written, '%Y-%m-%d')
-        edited = datetime.date.strftime(post.edited, '%Y-%m-%d')
-
-        if request.method == 'POST':
-            title = request.form['title']
-            content = request.form['content']
-            description = request.form['description']
-            author = request.form['author']
-            # is_published = request.form['is_published']
-            
-            url = request.form['url']
-
-            if not title:
-                flash('Title is required!')
-            else:
-                post.title = title
-                post.url = url
-                post.written = written
-                post.edited = datetime.date.today()
-                post.author = author
-                post.text = content
-                post.description = description
-                # post.is_published = is_published
-                db.session.commit()
-                
-                return redirect(url_for('index'))
-
-        return render_template('edit_post.html', post=post, written = written_string, edited = edited)
     
     @app.route('/register')
     def register():
@@ -112,7 +33,7 @@ def create_app():
             Если НЕТ, перенаправляем его на страницк register.html"""
 
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('article.index'))
         title = 'Регистрация'
         register_form = RegisterForm()
         return render_template('register.html', page_title=title, form=register_form)
@@ -144,7 +65,7 @@ def create_app():
             db.session.commit()
             login_user(new_user)
             flash('Вы успешно зарегистрировались')
-            return redirect(url_for('index'))
+            return redirect(url_for('article.index'))
         
     @app.route('/login')
     def login():
@@ -153,7 +74,7 @@ def create_app():
             Если НЕТ, перенаправляем его на страницк login.html"""
 
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('article.index'))
         title = 'Авторизация'
         login_form = LoginForm()
         return render_template('login.html', page_title=title, form=login_form)
@@ -174,7 +95,7 @@ def create_app():
             if user and user.check_password(form.password.data):
                 login_user(user)
                 flash('Вы успешно вошли на сайт')
-                return redirect(url_for('index'))
+                return redirect(url_for('article.index'))
 
         flash('Неправильные имя или/и пароль')
         return redirect(url_for('login'))
@@ -183,7 +104,7 @@ def create_app():
     def logout():
         flash('Вы успешно вышли из аккаунта.')
         logout_user()
-        return redirect(url_for('index'))
+        return redirect(url_for('article.index'))
 
     @app.route('/admin')
     @login_required
