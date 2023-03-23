@@ -22,7 +22,7 @@ def index():
 @blueprint.route('/<int:post_id>')
 def post(post_id):
     post = get_post(post_id)
-    return render_template('post.html', post=post)
+    return render_template('news/post.html', post=post)
 
 def new_post_url():
     max_id = db.session.query(db.func.max(Articles.id)).first()[0]
@@ -53,7 +53,7 @@ def create_post():
             db.session.commit()
         return redirect(url_for('article.index'))
 
-    return render_template('create_post.html', author=author, written=written_string, url=url)
+    return render_template('news/create_post.html', author=author, written=written_string, url=url)
 
 
 @blueprint.route('/<int:id>/edit_post', methods=('GET', 'POST'))
@@ -87,4 +87,4 @@ def edit_post(id):
             
             return redirect(url_for('article.index'))
 
-    return render_template('edit_post.html', post=post, written = written_string, edited = edited)
+    return render_template('news/edit_post.html', post=post, written = written_string, edited = edited)
