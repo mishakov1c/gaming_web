@@ -26,13 +26,13 @@
           {% endif %}
           {% if not current_user.is_authenticated %}
             <li>
-              <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='login'">Войти в систему</button></li>
+              <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='user/login'">Войти в систему</button></li>
             <li>
-              <button type="button" class="btn btn-primary" onclick="window.location.href='register'">Регистрация</button>
+              <button type="button" class="btn btn-primary" onclick="window.location.href='user/register'">Регистрация</button>
             </li>
           {% else %}
           <li>
-            <button type="button" class="btn btn-primary" onclick="window.location.href='logout'">Выйти из системы</button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='user/logout'">Выйти из системы</button>
           </li>
           {% endif %}
         </ul>
