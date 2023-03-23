@@ -12,10 +12,9 @@
                 </div>
                 {% endif %}
             {% endwith %}           
-            <h2>Новости</h2>
             {% for news in news_list%}
                 <a href="{{ news.url }}">
-                    <h2>{{ news.title }}</h2>
+                    <h3>{{ news.title }}</h3>
                 </a>
                 <p>{{ news.description }}</p>
                 {% if news.pic != None%}
