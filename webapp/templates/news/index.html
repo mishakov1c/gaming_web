@@ -14,16 +14,21 @@
             {% endwith %}           
             <h2>Новости</h2>
             {% for news in news_list%}
-            <a href="{{ news.url }}">
-                <h2>{{ news.title }}</h2>
-            </a>
+                <a href="{{ news.url }}">
+                    <h2>{{ news.title }}</h2>
+                </a>
+                <p>{{ news.description }}</p>
+                {% if news.pic != None%}
+                    <img src="{{ news.pic }}" width="800">
+                {% endif %}
+                <br>
                 <span>{{ news.author }} {{ news.written.strftime('%d.%m.%Y') }}</span>
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('article.edit_post', id=news['id']) }}">
-                <span class="badge text-bg-warning">Edit</span>
-            </a>
-            {% endif %}
-            <hr>
+                    <a href="{{ url_for('article.edit_post', id=news['id']) }}">
+                        <span class="badge text-bg-warning">Edit</span>
+                    </a>
+                {% endif %}
+                <hr>
             {% endfor %}
         </div>
     </div>
