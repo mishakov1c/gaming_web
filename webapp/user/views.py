@@ -5,7 +5,7 @@ from webapp.user.models import db, User
 
 blueprint = Blueprint('user', __name__)
 
-@blueprint.route('/user/register')
+@blueprint.route('/register')
 def register():
     r"""Проверяем, если пользователь залогинен.
         Если ДА, перенаправляем его на страницу index.html
@@ -17,7 +17,7 @@ def register():
     register_form = RegisterForm()
     return render_template('register.html', page_title=title, form=register_form)
 
-@blueprint.route('/user/process-register', methods=['GET', 'POST'])
+@blueprint.route('/process-register', methods=['GET', 'POST'])
 def process_register():
 
     form = RegisterForm()
@@ -47,7 +47,7 @@ def process_register():
         flash('Вы успешно зарегистрировались')
         return redirect(url_for('article.index'))
     
-@blueprint.route('/user/login')
+@blueprint.route('/login')
 def login():
     r"""Проверяем, если пользователь залогинен.
         Если ДА, перенаправляем его на страницу index.html
@@ -59,7 +59,7 @@ def login():
     login_form = LoginForm()
     return render_template('login.html', page_title=title, form=login_form)
 
-@blueprint.route('/user/process-login', methods=['POST'])
+@blueprint.route('/process-login', methods=['POST'])
 def process_login():
     r"""Маршрут, который обрабатывает информацию, полученную из полей
     данных для входа в аккаунт в login.html. Создается форма из flask-login,
@@ -80,14 +80,18 @@ def process_login():
     flash('Неправильные имя или/и пароль')
     return redirect(url_for('user.login'))
 
-@blueprint.route('/user/logout')
+@blueprint.route('/logout')
 def logout():
     flash('Вы успешно вышли из аккаунта.')
     logout_user()
     return redirect(url_for('article.index'))
 
+@blueprint.route('/profile')
+@login_required
+def profile():
+    return render_template("profile.html", user=current_user)
 
-@blueprint.route('/user/admin')
+@blueprint.route('/admin')
 @login_required
 def admin_index():
     if current_user.is_admin:

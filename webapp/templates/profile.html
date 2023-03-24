@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Профиль пользователя</h1>
+    <div class="card">
+        <div class="card-body">
+            <p class="mb-2"><strong>ID:</strong> {{ user.id }}</p>
+            <p class="mb-2"><strong>Имя пользователя:</strong> {{ user.username }}</p>
+            <p class="mb-2"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="mb-2"><strong>Рейтинг:</strong> {{ user.rating }}</p>
+            <img class="rounded" src="{{ user.avatar }}" alt="Аватар пользователя" width="100" height="100">
+        </div>
+    </div>
+</div>
+{% endblock %}
