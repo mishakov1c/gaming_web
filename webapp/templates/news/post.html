@@ -6,8 +6,8 @@
 <form method="post">
     <div class="row">
         <div class="col-8">
-            </div>
-              <p>{{ post.text }}</p>
+            <div>
+              <div style="white-space: pre-wrap">{{ post.text|safe }} </div>
             </div>
         </div>
     </div>
