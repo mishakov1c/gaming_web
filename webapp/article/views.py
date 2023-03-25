@@ -4,12 +4,14 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import  current_user
 from webapp.article.models import db, Articles
 from webapp.config import MAIN_PAGE
+from webapp.user.models import User
 
 blueprint = Blueprint('article', __name__)
 
 def get_post(post_id):
     post = Articles.query.get_or_404(post_id)
     return post
+
 
 # Переход на главную страницу
 @blueprint.route('/')
@@ -32,7 +34,7 @@ def new_post_url():
 
 @blueprint.route('/create_post', methods=('GET', 'POST'))
 def create_post():
-    author = current_user.username
+    author_id = current_user.id
     written = datetime.date.today()
     written_string = datetime.date.strftime(written, '%Y-%m-%d')
     url = new_post_url()
@@ -47,12 +49,12 @@ def create_post():
             flash('Title is required!')
         else:
             new_article = Articles(title=title, url=url, written=written,
-            author=author, text=content, description=description, edited=written, is_published=is_published)
+            author_id=author_id, text=content, description=description, edited=written, is_published=is_published)
             db.session.add(new_article)
             db.session.commit()
         return redirect(url_for('article.index'))
 
-    return render_template('news/create_post.html', author=author, written=written_string, url=url)
+    return render_template('news/create_post.html', author=current_user.username, written=written_string, url=url)
 
 
 @blueprint.route('/<int:id>/edit_post', methods=('GET', 'POST'))
@@ -66,7 +68,6 @@ def edit_post(id):
         title = request.form['title']
         content = request.form['content']
         description = request.form['description']
-        author = request.form['author']
         is_published = True if type(request.form.get('is_published')) == str else False 
         
         url = request.form['url']
@@ -78,7 +79,6 @@ def edit_post(id):
             post.url = url
             post.written = written
             post.edited = datetime.date.today()
-            post.author = author
             post.text = content
             post.description = description
             post.is_published = is_published

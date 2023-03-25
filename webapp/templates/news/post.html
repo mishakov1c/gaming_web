@@ -2,10 +2,14 @@
 
 {% block content %}
 <h1>{% block title %} {{ post['title'] }} {% endblock %}</h1>
-<h6>{{ post.author }} {{ post.written.strftime('%d.%m.%Y') }} </h6>
+<h6>{{ post.author.username }} {{ post.written.strftime('%d.%m.%Y') }} </h6>
 <form method="post">
     <div class="row">
         <div class="col-8">
+            {% if post.pic != None%}
+                <img src="{{ post.pic }}" width="800">
+                <br>
+            {% endif %}
             <div>
               <div style="white-space: pre-wrap">{{ post.text|safe }} </div>
             </div>

@@ -16,17 +16,21 @@
                 <a href="{{ news.url }}">
                     <h3>{{ news.title }}</h3>
                 </a>
-                <p>{{ news.description }}</p>
-                {% if news.pic != None%}
-                    <img src="{{ news.pic }}" width="800">
-                {% endif %}
-                <br>
-                <span>{{ news.author }} {{ news.written.strftime('%d.%m.%Y') }}</span>
-                {% if current_user.is_authenticated %}
+               
+                <span style="font-weight:500;">{{ news.author.username }} {{ news.written.strftime('%d.%m.%Y') }}</span>
+                {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
                     <a href="{{ url_for('article.edit_post', id=news['id']) }}">
                         <span class="badge text-bg-warning">Edit</span>
                     </a>
                 {% endif %}
+
+                <p>{{ news.description }}</p>
+                {% if news.pic != None%}
+                    <img src="{{ news.pic }}" width="800">
+                    <br>
+                {% endif %}
+                
+                
                 <hr>
             {% endfor %}
         </div>
