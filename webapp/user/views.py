@@ -2,6 +2,7 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from webapp.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_required, login_user, logout_user
 from webapp.user.models import db, User
+from webapp.article.models import Articles
 from validate_email import validate_email
 
 blueprint = Blueprint('user', __name__)
@@ -93,7 +94,8 @@ def logout():
 @blueprint.route('/profile')
 @login_required
 def profile():
-    return render_template("profile.html", user=current_user)
+    news_list = Articles.query.filter(Articles.author == current_user.username)
+    return render_template("profile.html", user=current_user, news_list=news_list)
 
 @blueprint.route('/admin')
 @login_required
