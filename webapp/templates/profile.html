@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container">
     <h1 class="mb-4">Профиль пользователя</h1>
     <div class="card">
         <div class="card-body">
@@ -13,5 +13,20 @@
             <img class="rounded" src="{{ user.avatar }}" alt="Аватар пользователя" width="100" height="100">
         </div>
     </div>
+    <div class="list-group w-auto">
+        {% for news in news_list %}
+        <a href="{{ news.url }}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+          <img src="{{ user.avatar }}" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
+          <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+              <h6 class="mb-0">{{ news.title }}</h6>
+              <p class="mb-0 opacity-75">{{ news.description }}</p>
+            </div>
+            <small class="opacity-50 text-nowrap">{{ news.written.strftime('%d.%m.%Y') }}</small>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
 </div>
+
 {% endblock %}
