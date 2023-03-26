@@ -94,7 +94,7 @@ def logout():
 @blueprint.route('/profile')
 @login_required
 def profile():
-    news_list = Articles.query.filter(Articles.author == current_user.username)
+    news_list = Articles.query.filter(Articles.author == current_user)
     return render_template("profile.html", user=current_user, news_list=news_list)
 
 @blueprint.route('/admin')
