@@ -2,6 +2,8 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from webapp.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_required, login_user, logout_user
 from webapp.user.models import db, User
+from webapp.article.models import Articles
+from validate_email import validate_email
 
 blueprint = Blueprint('user', __name__)
 
@@ -12,7 +14,7 @@ def register():
         Если НЕТ, перенаправляем его на страницк register.html"""
 
     if current_user.is_authenticated:
-        return redirect(url_for('article/index'))
+        return redirect(url_for('article.index'))
     title = 'Регистрация'
     register_form = RegisterForm()
     return render_template('register.html', page_title=title, form=register_form)
@@ -34,6 +36,9 @@ def process_register():
             return redirect(url_for('user.register'))
         elif User.query.filter_by(email=email.data).first():
             flash('Пользователь с таким имейлом уже существует!')
+            return redirect(url_for('user.register'))
+        elif not validate_email(form.email.data):
+            flash('Некорректный имейл')
             return redirect(url_for('user.register'))
         elif not password1 == password2:
             flash('Пароли не одинаковые!')
@@ -89,7 +94,8 @@ def logout():
 @blueprint.route('/profile')
 @login_required
 def profile():
-    return render_template("profile.html", user=current_user)
+    news_list = Articles.query.filter(Articles.author == current_user)
+    return render_template("profile.html", user=current_user, news_list=news_list)
 
 @blueprint.route('/admin')
 @login_required
