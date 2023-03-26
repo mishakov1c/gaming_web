@@ -1,5 +1,5 @@
 from webapp.db import db
-from webapp.user.views import User
+
 
 class Articles(db.Model):
     id = db.Column(db.Integer, primary_key = True)
