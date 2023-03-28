@@ -15,6 +15,7 @@ class Articles(db.Model):
     pic = db.Column(db.String,  nullable=True)
 
     author = db.relationship('User', backref='articles')
+    likes = db.relationship('Like', backref='article')
 
     def __repr__(self) -> str:
         return '<News {} {}>'.format(self.title, self.author)

@@ -4,6 +4,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from flask_migrate import Migrate
 from webapp.article.views import blueprint as article_blueprint
 from webapp.user.views import blueprint as user_blueprint
+from webapp.likes.views import blueprint as likes_blueprint
 from webapp.user.models import db, User
 
 
@@ -20,6 +21,7 @@ def create_app():
 
     app.register_blueprint(article_blueprint)
     app.register_blueprint(user_blueprint)
+    app.register_blueprint(likes_blueprint)
 
     @login_manager.user_loader
     def load_user(user_id):

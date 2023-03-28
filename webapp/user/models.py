@@ -13,6 +13,8 @@ class User(db.Model, UserMixin):
     birthday_date = db.Column(db.DateTime)
     avatar = db.Column(db.String, default='https://malvina-group.com/wp-content/uploads/2021/03/16.136.1-Pingvin-v-shapke-400x400.jpg')
     
+    likes = db.relationship('Like', backref='user')
+
     r"""Первая функция меняет пароль на переданный
         перед этим его зашифровав.
 
