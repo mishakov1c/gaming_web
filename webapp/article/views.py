@@ -38,7 +38,21 @@ def post(post_id):
 
 @blueprint.route('/articles/comment', methods=['POST'])
 def add_comment():
-    pass
+    form = CommentForm()
+    if form.validate_on_submit():
+        if Articles.query.filter(Articles.id == form.article_id.data).first():
+            comment = Comment(text=form.comment_text.data, article_id=form.article_id.data, user_id=current_user.id)
+            db.session.add(comment)
+            db.session.commit()
+            flash('Комментарий успешно добавлен.')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash('Ошибка в поле {}: {}'.format(
+                    getattr(form, field).label.text,
+                    error    
+                ))
+    return redirect(request.referrer) 
 
 
 @blueprint.route('/create_post', methods=('GET', 'POST'))
