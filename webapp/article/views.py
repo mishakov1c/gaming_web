@@ -2,28 +2,18 @@ import datetime
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import  current_user
-from webapp.article.models import db, Articles
+from webapp.article.forms import CommentForm
+from webapp.article.models import db, Articles, Comment
 from webapp.config import MAIN_PAGE
 from webapp.user.models import User
 
 blueprint = Blueprint('article', __name__)
 
+
 def get_post(post_id):
     post = Articles.query.get_or_404(post_id)
     return post
 
-
-# Переход на главную страницу
-@blueprint.route('/')
-def index():
-    news_list = Articles.query.filter(Articles.is_published == True)
-    return render_template('news/index.html', news_list = news_list, current_user=current_user)
-
-
-@blueprint.route('/<int:post_id>')
-def post(post_id):
-    post = get_post(post_id)
-    return render_template('news/post.html', post=post)
 
 def new_post_url():
     max_id = db.session.query(db.func.max(Articles.id)).first()[0]
@@ -31,6 +21,25 @@ def new_post_url():
     new_url = f'{MAIN_PAGE}{new_id}'
 
     return new_url
+
+# Переход на главную страницу
+@blueprint.route('/')
+def index():
+    news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.edited.desc())
+    return render_template('articles/index.html', news_list = news_list, current_user=current_user)
+
+
+@blueprint.route('/<int:post_id>')
+def post(post_id):
+    post = get_post(post_id)
+    comment_form = CommentForm(article_id = post_id)
+    return render_template('articles/post.html', post=post, comment_form=comment_form)
+
+
+@blueprint.route('/articles/comment', methods=['POST'])
+def add_comment():
+    pass
+
 
 @blueprint.route('/create_post', methods=('GET', 'POST'))
 def create_post():
@@ -54,7 +63,7 @@ def create_post():
             db.session.commit()
         return redirect(url_for('article.index'))
 
-    return render_template('news/create_post.html', author=current_user.username, written=written_string, url=url)
+    return render_template('articles/create_post.html', author=current_user.username, written=written_string, url=url)
 
 
 @blueprint.route('/<int:id>/edit_post', methods=('GET', 'POST'))
@@ -86,4 +95,4 @@ def edit_post(id):
             
             return redirect(url_for('article.index'))
 
-    return render_template('news/edit_post.html', post=post, written = written_string, edited = edited)
+    return render_template('articles/edit_post.html', post=post, written = written_string, edited = edited)

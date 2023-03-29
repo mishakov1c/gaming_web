@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} {{ post['title'] }} {% endblock %}</h1>
+<h6>{{ post.author.username }}
+    {{ post.written.strftime('%d.%m.%Y') }}
+    {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == post.author_id) %}
+    <a href="{{ url_for('article.edit_post', id=post['id']) }}">
+        <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
+    </a>
+{% endif %}</h6>
+
+<form method="post">
+    <div class="row">
+        <div class="col-8">
+            {% if post.pic != None%}
+                <img src="{{ post.pic }}" width="800">
+                <br>
+            {% endif %}
+            <div>
+              <div style="white-space: pre-wrap">{{ post.text|safe }} </div>
+            </div>
+        </div>
+    </div>
+</form>
+<hr>
+{% if post.comments %}
+    <h3>Комментарии</h3>
+    {% for comment in post.comments %}
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">{{ comment.text }}</p>
+                <p class="card-text">
+                    <small>Опубликовано: {{ comment.created.strftime('%d.%m.%Y') }} |
+                        Автор: {{comment.user.username}}</small>
+                </p> 
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<form action="{{ url_for('article.add_comment') }}" method="POST">
+    {{ comment_form.hidden_tag() }}
+    <div class="form-group">
+        {{ comment_form.comment_text.label }}
+        {{ comment_form.comment_text() }}
+    </div>
+    {{ comment_form.submit() }}
+</form>
+<br>
+{% endblock %}

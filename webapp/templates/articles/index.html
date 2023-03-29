@@ -11,25 +11,28 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-            {% endwith %}           
+            {% endwith %} 
+
             {% for news in news_list%}
+                
                 <a href="{{ news.url }}">
                     <h3>{{ news.title }}</h3>
                 </a>
                
-                <span style="font-weight:500;">{{ news.author.username }} {{ news.written.strftime('%d.%m.%Y') }}</span>
+                <span style="font-weight:500;">{{ news.author.username }} | {{ news.written.strftime('%d.%m.%Y') }} | Комментарии: {{ news.comments_count() }}</span>
+
                 {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
                     <a href="{{ url_for('article.edit_post', id=news['id']) }}">
-                        <span class="badge text-bg-warning">Edit</span>
+                        <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
                     </a>
                 {% endif %}
-
+               
                 <p>{{ news.description }}</p>
+                
                 {% if news.pic != None%}
                     <img src="{{ news.pic }}" width="800">
                     <br>
                 {% endif %}
-                
                 
                 <hr>
             {% endfor %}
