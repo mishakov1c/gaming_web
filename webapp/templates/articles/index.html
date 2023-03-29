@@ -19,7 +19,7 @@
                     <h3>{{ news.title }}</h3>
                 </a>
                
-                <span style="font-weight:500;">{{ news.author.username }} {{ news.written.strftime('%d.%m.%Y') }}</span>
+                <span style="font-weight:500;">{{ news.author.username }} | {{ news.written.strftime('%d.%m.%Y') }} | Комментарии: {{ news.comments_count() }}</span>
 
                 {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
                     <a href="{{ url_for('article.edit_post', id=news['id']) }}">
