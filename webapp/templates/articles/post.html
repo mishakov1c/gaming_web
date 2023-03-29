@@ -5,11 +5,11 @@
 <h6>{{ post.author.username }}
     {{ post.written.strftime('%d.%m.%Y') }}
     {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == post.author_id) %}
-    <a href="{{ url_for('article.edit_post', id=post['id']) }}">
-        <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
-    </a>
-{% endif %}</h6>
-
+        <a href="{{ url_for('article.edit_post', id=post['id']) }}">
+            <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
+        </a>
+    {% endif %}</h6>
+{% include('messages.html') %}
 <form method="post">
     <div class="row">
         <div class="col-8">
@@ -38,12 +38,14 @@
         </div>
     {% endfor %}
 {% endif %}
+<br>
 <form action="{{ url_for('article.add_comment') }}" method="POST">
     {{ comment_form.hidden_tag() }}
     <div class="form-group">
         {{ comment_form.comment_text.label }}
         {{ comment_form.comment_text() }}
     </div>
+    <br>
     {{ comment_form.submit() }}
 </form>
 <br>
