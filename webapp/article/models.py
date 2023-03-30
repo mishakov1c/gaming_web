@@ -18,6 +18,13 @@ class Articles(db.Model):
 
     def comments_count(self):
         return Comment.query.filter(Comment.article_id == self.id).count()
+    
+    def likes_count(self):
+        return Like.query.filter(Like.article_id == self.id).count()
+    
+    def is_liked_by(self, user):
+        like = Like.query.filter_by(user_id=user.id, article_id=self.id).first()
+        return True if like else False
 
     def __repr__(self) -> str:
         return '<News {} {}>'.format(self.title, self.author)
@@ -41,6 +48,7 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id', ondelete='CASCADE'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
     article = db.relationship('Articles', backref='likes')
     user = db.relationship('User', backref='likes')
 
