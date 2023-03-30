@@ -3,8 +3,13 @@
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
       <span class="fs-4">Geek Space</span>
     </a>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
     <ul class="nav nav-pills">
-      <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+      <!-- <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
+      
       {% if current_user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('article.create_post')}}">New Post</a>
