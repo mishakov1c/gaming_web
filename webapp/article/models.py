@@ -20,7 +20,11 @@ class Articles(db.Model):
         return Comment.query.filter(Comment.article_id == self.id).count()
     
     def likes_count(self):
-        return Like.query.filter(Like.article_id == self.id).count()
+        like = Like.query.filter(Like.article_id == self.id)
+        if like:
+            return like.count()
+        else:
+            return 0
     
     def is_liked_by(self, user):
         like = Like.query.filter_by(user_id=user.id, article_id=self.id).first()
