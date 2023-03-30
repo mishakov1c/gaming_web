@@ -24,6 +24,18 @@
                     <img src="{{ news.pic }}" width="800">
                     <br>
                 {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
+                    <button type="submit" style="background: none; border: none;">
+                        {% if news.is_liked_by(current_user) %}
+                        <i class="bi bi-heart-fill" style="color: red;"></i></button>
+                        {% else %}
+                        <i class="bi bi-heart" style="color: red;"></i></button>
+                        {% endif %}
+                </form>
+                <span>{{ news.likes_count()}}</span>
+                {% endif %}
                 
                 <hr>
             {% endfor %}

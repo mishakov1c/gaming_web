@@ -1,13 +1,13 @@
 import datetime
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import  current_user
+from flask_login import current_user, login_required
 from webapp.article.forms import CommentForm
-from webapp.article.models import db, Articles, Comment
+from webapp.article.models import db, Articles, Comment, Like
 from webapp.config import MAIN_PAGE
-from webapp.user.models import User
 
 blueprint = Blueprint('article', __name__)
+likes_blueprint = Blueprint('likes', __name__)
 
 
 def get_post(post_id):
@@ -110,3 +110,20 @@ def edit_post(id):
             return redirect(url_for('article.index'))
 
     return render_template('articles/edit_post.html', post=post, written = written_string, edited = edited)
+
+@blueprint.route('/like/<int:article_id>', methods=['POST'])
+@login_required
+def like_toggle(article_id):
+    article = Articles.query.get_or_404(article_id)
+    like = Like.query.filter_by(user_id=current_user.id, article_id=article_id).first()
+
+    if not like:
+        new_like = Like(user_id=current_user.id, article_id=article_id)
+        db.session.add(new_like)
+        db.session.commit()
+        flash("LIKE")
+    else:
+        db.session.delete(like)
+        db.session.commit()
+        flash("UNLIKE")
+    return redirect(request.referrer)
