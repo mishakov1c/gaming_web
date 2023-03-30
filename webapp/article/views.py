@@ -121,9 +121,7 @@ def like_toggle(article_id):
         new_like = Like(user_id=current_user.id, article_id=article_id)
         db.session.add(new_like)
         db.session.commit()
-        flash("LIKE")
     else:
         db.session.delete(like)
         db.session.commit()
-        flash("UNLIKE")
     return redirect(request.referrer)
