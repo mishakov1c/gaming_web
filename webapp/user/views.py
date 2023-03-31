@@ -17,7 +17,7 @@ def register():
         return redirect(url_for('article.index'))
     title = 'Регистрация'
     register_form = RegisterForm()
-    return render_template('register.html', page_title=title, form=register_form)
+    return render_template('user/register.html', page_title=title, form=register_form)
 
 @blueprint.route('/process-register', methods=['GET', 'POST'])
 def process_register():
@@ -62,7 +62,7 @@ def login():
         return redirect(url_for('article.index'))
     title = 'Авторизация'
     login_form = LoginForm()
-    return render_template('login.html', page_title=title, form=login_form)
+    return render_template('user/login.html', page_title=title, form=login_form)
 
 @blueprint.route('/process-login', methods=['POST'])
 def process_login():
@@ -96,13 +96,15 @@ def logout():
 def profile():
     news_list = Articles.query.filter(Articles.author == current_user)
     favorite_list = Articles.query.join(Like, Like.article_id == Articles.id).filter(Like.user_id == current_user.id).all()
-    return render_template("profile.html", user=current_user, news_list=news_list, favorite_list=favorite_list)
+    return render_template("user/profile.html", user=current_user, news_list=news_list, favorite_list=favorite_list)
 
-@blueprint.route('/admin')
+@blueprint.route('/user/<string:username>', methods=['GET'])
 @login_required
-def admin_index():
-    if current_user.is_admin:
-        return 'Привет, Админ!'
-    else:
-        return 'Ты не Админ!'
-
+def another_profile(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash("Такого пользователя не существует")
+        return redirect(url_for('article.index'))
+    news_list = Articles.query.filter(Articles.author == user)
+    favorite_list = Articles.query.join(Like, Like.article_id == Articles.id).filter(Like.user_id == user.id).all()
+    return render_template("user/another_user.html", user=user, news_list=news_list, favorite_list=favorite_list)
