@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for, request
 from webapp.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_required, login_user, logout_user
 from webapp.user.models import db, User
@@ -91,20 +91,45 @@ def logout():
     logout_user()
     return redirect(url_for('article.index'))
 
-@blueprint.route('/profile')
-@login_required
-def profile():
-    news_list = Articles.query.filter(Articles.author == current_user)
-    favorite_list = Articles.query.join(Like, Like.article_id == Articles.id).filter(Like.user_id == current_user.id).all()
-    return render_template("user/profile.html", user=current_user, news_list=news_list, favorite_list=favorite_list)
 
 @blueprint.route('/user/<string:username>', methods=['GET'])
 @login_required
-def another_profile(username):
+def profile(username):
     user = User.query.filter_by(username=username).first()
     if not user:
         flash("Такого пользователя не существует")
         return redirect(url_for('article.index'))
     news_list = Articles.query.filter(Articles.author == user)
     favorite_list = Articles.query.join(Like, Like.article_id == Articles.id).filter(Like.user_id == user.id).all()
-    return render_template("user/another_user.html", user=user, news_list=news_list, favorite_list=favorite_list)
+    return render_template("user/profile.html", user=user, news_list=news_list, favorite_list=favorite_list)
+
+@blueprint.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        old_password = request.form['old_password']
+        new_password = request.form['password']
+
+        if User.query.filter(User.username == username, User.id != current_user.id).first():
+            flash('Этот логин уже занят. Пожалуйста, выберите другой.')
+            return redirect(url_for('user.edit_profile'))
+
+        if User.query.filter(User.email == email, User.id != current_user.id).first():
+            flash('Этот email уже занят. Пожалуйста, выберите другой.')
+            return redirect(url_for('user.edit_profile'))
+        
+        if old_password and not current_user.check_password(old_password):
+            flash('Неправильный старый пароль. Попробуйте еще раз')
+            return redirect(url_for('user.edit_profile'))
+        
+        current_user.username = username
+        current_user.email = email
+        if new_password and new_password != old_password:
+            current_user.set_password(new_password)
+            flash('Профиль успешно обновлен.')
+        elif new_password and new_password == old_password:
+            flash('Пароли одинаковые!')
+        db.session.commit()
+    return redirect(url_for('user.profile', username=current_user.username))
