@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  web:
+    image: geek-space
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./webapp.db:/app/webapp.db
