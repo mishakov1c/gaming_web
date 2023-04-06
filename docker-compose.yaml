@@ -2,8 +2,24 @@ version: "3"
 
 services:
   web:
-    image: geek-space
+    build: .
+    restart: always
     ports:
       - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://geek_space_admin:159753qwerty@db:5432/geek_space_db
+      
+  db:
+    image: postgres
+    restart: always
     volumes:
-      - ./webapp.db:/app/webapp.db
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=geek_space_admin
+      - POSTGRES_PASSWORD=159753qwerty
+      - POSTGRES_DB=geek_space_db
+  
+
+  
