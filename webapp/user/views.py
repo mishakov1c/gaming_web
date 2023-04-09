@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, request
-from webapp.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_required, login_user, logout_user
+
+from webapp.user.decorators import admin_required
+from webapp.forms import LoginForm, RegisterForm
 from webapp.user.models import db, User
 from webapp.article.models import Articles, Like
 from validate_email import validate_email
@@ -133,3 +135,16 @@ def edit_profile():
             flash('Пароли одинаковые!')
         db.session.commit()
     return redirect(url_for('user.profile', username=current_user.username))
+
+@blueprint.route('/block_user/<int:user_id>', methods=['POST'])
+@admin_required
+def block_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.is_active = not user.is_active
+    db.session.commit()
+    
+    if user.is_active:
+        flash(f'Пользователь {user.username} заблокирован, поделом ему!')
+    else:
+        flash(f'Пользователь {user.username} разблокирован, поняли и простили!')
+    return redirect(request.referrer)
