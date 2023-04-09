@@ -91,7 +91,8 @@ def edit_post(id):
         title = request.form['title']
         content = request.form['content']
         description = request.form['description']
-        is_published = True if type(request.form.get('is_published')) == str else False 
+        is_published = True if type(request.form.get('is_published')) == str else False
+        pic = request.form['pic'] 
         
         url = request.form['url']
 

@@ -9,6 +9,7 @@ services:
       - "5678:5678"   # <-- For debugging
     depends_on:
       - db
+    #  - elasticsearch  
     environment:
       DATABASE_URL: postgres://geek_space_admin:159753qwerty@db:5432/geek_space_db
       FLASK_ENV: development   # <-- For debugging
@@ -25,3 +26,5 @@ services:
       POSTGRES_USER: geek_space_admin
       POSTGRES_PASSWORD: 159753qwerty
       POSTGRES_DB: geek_space_db
+
+  
