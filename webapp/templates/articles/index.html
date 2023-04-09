@@ -2,30 +2,30 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-8">
-            {% include('messages.html') %}
-            {% for news in news_list%}
-                
-                <a href="{{ news.url }}">
-                    <h3>{{ news.title }}</h3>
+        {% include('messages.html') %}
+        {% for news in news_list%}
+            
+            <a href="{{ news.url }}">
+                <h3>{{ news.title }}</h3>
+            </a>
+            
+            <span style="font-weight:500;"><a href="{{ url_for('user.profile', username=news.author.username) }}">{{ news.author.username }}</a> | {{ news.written.strftime('%d.%m.%Y') }} | Комментарии: {{ news.comments_count() }}</span>
+
+            {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
+                <a href="{{ url_for('article.edit_post', id=news['id']) }}">
+                    <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
                 </a>
-               
-                <span style="font-weight:500;"><a href="{{ url_for('user.profile', username=news.author.username) }}">{{ news.author.username }}</a> | {{ news.written.strftime('%d.%m.%Y') }} | Комментарии: {{ news.comments_count() }}</span>
+            {% endif %}
+            
+            <p>{{ news.description }}</p>
+            
+            {% if news.pic != None%}
+                <img src="{{ news.pic }}" width="800">
+                <br>
+            {% endif %}
 
-                {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
-                    <a href="{{ url_for('article.edit_post', id=news['id']) }}">
-                        <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
-                    </a>
-                {% endif %}
-               
-                <p>{{ news.description }}</p>
-                
-                {% if news.pic != None%}
-                    <img src="{{ news.pic }}" width="800">
-                    <br>
-                {% endif %}
-
-                {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
+            <div class="like-container">
                 <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
                     <button type="submit" style="background: none; border: none;">
                         {% if news.is_liked_by(current_user) %}
@@ -35,10 +35,9 @@
                         {% endif %}
                 </form>
                 <span>{{ news.likes_count()}}</span>
-                {% endif %}
-                
-                <hr>
-            {% endfor %}
-        </div>
+            {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
     </div>
 {% endblock %}    
