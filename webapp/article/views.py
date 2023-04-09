@@ -106,6 +106,7 @@ def edit_post(id):
             post.text = content
             post.description = description
             post.is_published = is_published
+            post.pic = pic
             db.session.commit()
             
             return redirect(url_for('article.index'))
