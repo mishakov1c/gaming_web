@@ -48,7 +48,7 @@ def process_register():
         elif len(password1) < 6 and password1 != 'qwe':
             flash('Пароль слишком короткий, введите не менее 6 символов!')
             return redirect(url_for('user.register'))
-        elif len(username) > 30:
+        elif len(username.data) > 30:
             flash('Имя пользователя слишком большое, введите не более 30 символов!')
             return redirect(url_for('user.register'))
 
