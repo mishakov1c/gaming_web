@@ -25,7 +25,7 @@ def new_post_url():
 # Переход на главную страницу
 @blueprint.route('/')
 def index():
-    news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.edited.desc())
+    news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.written.desc())
     return render_template('articles/index.html', news_list = news_list, current_user=current_user)
 
 
@@ -58,21 +58,22 @@ def add_comment():
 @blueprint.route('/create_post', methods=('GET', 'POST'))
 def create_post():
     author_id = current_user.id
-    written = datetime.date.today()
-    written_string = datetime.date.strftime(written, '%Y-%m-%d')
+    written = datetime.datetime.now()
+    written_string = datetime.datetime.strftime(written, '%Y-%m-%d %H:%M:%S')
     url = new_post_url()
 
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
         description = request.form['description']
+        pic = request.form['pic']
         is_published = True if type(request.form.get('is_published')) == str else False
 
         if not title:
             flash('Title is required!')
         else:
             new_article = Articles(title=title, url=url, written=written,
-            author_id=author_id, text=content, description=description, edited=written, is_published=is_published)
+            author_id=author_id, text=content, description=description, edited=written, is_published=is_published, pic=pic)
             db.session.add(new_article)
             db.session.commit()
         return redirect(url_for('article.index'))
@@ -84,8 +85,8 @@ def create_post():
 def edit_post(id):
     post = get_post(id)
     written = post.written
-    written_string = datetime.date.strftime(written, '%Y-%m-%d')
-    edited = datetime.date.strftime(post.edited, '%Y-%m-%d')
+    written_string = datetime.datetime.strftime(written, '%Y-%m-%d %H:%M:%S')
+    edited = datetime.date.strftime(post.edited, '%Y-%m-%d %H:%M:%S')
 
     if request.method == 'POST':
         title = request.form['title']
@@ -102,7 +103,7 @@ def edit_post(id):
             post.title = title
             post.url = url
             post.written = written
-            post.edited = datetime.date.today()
+            post.edited = datetime.datetime.now()
             post.text = content
             post.description = description
             post.is_published = is_published
@@ -137,3 +138,4 @@ def search():
             return render_template('articles/search_results.html', results_list=results_list)
         else:
             flash('Длина искомой строки должна быть больше 3 символов!')
+    return redirect(url_for('article.index'))

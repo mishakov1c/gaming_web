@@ -28,9 +28,8 @@
         
             <div class="form-group">
                 <label for="description">Краткое описание</label>
-                <textarea type="text" name="description"
-                    placeholder="Краткое описание" class="form-control"
-                    value="{{ request.form['description'] or post['description'] }}" rows="5"></textarea>
+                <textarea name="description" placeholder="Краткое описание"
+                    class="form-control" rows="5">{{ request.form['description'] or post['description'] }}</textarea>
             </div>
 
             <div class="form-check form-switch">

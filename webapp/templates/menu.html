@@ -5,13 +5,11 @@
     </a>
     <form class="d-flex" role="search" action="{{ url_for('article.search') }}" method="post">
       <input class="form-control me-2" type="search" placeholder="Search" name="search_query" aria-label="Search" 
-          value="{{ request.form['search_query'] }}">>
+          value="{{ request.form['search_query'] }}">
       <button class="btn btn-outline-primary" type="submit">Search</button>
     </form>
 
-    <ul class="nav nav-pills">
-      <!-- <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
-      
+    <ul class="nav nav-pills"> 
       {% if current_user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('article.create_post')}}">New Post</a>
