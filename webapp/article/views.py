@@ -127,3 +127,13 @@ def like_toggle(article_id):
         db.session.delete(like)
         db.session.commit()
     return redirect(request.referrer)
+
+@blueprint.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        search_query = request.form['search_query']
+        if len(search_query) >= 3:
+            results_list = Articles.query.filter(Articles.title.like(f'%{search_query}%'))
+            return render_template('articles/search_results.html', results_list=results_list)
+        else:
+            flash('Длина искомой строки должна быть больше 3 символов!')

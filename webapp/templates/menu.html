@@ -3,10 +3,12 @@
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
       <span class="fs-4">Geek Space</span>
     </a>
-    <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    <form class="d-flex" role="search" action="{{ url_for('article.search') }}" method="post">
+      <input class="form-control me-2" type="search" placeholder="Search" name="search_query" aria-label="Search" 
+          value="{{ request.form['search_query'] }}">>
       <button class="btn btn-outline-primary" type="submit">Search</button>
     </form>
+
     <ul class="nav nav-pills">
       <!-- <li class="nav-item"><a href="#" class="nav-link">About</a></li> -->
       
