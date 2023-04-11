@@ -1,43 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="row">
-        {% include('messages.html') %}
-        {% for news in news_list%}
-            
-            <a href="{{ news.url }}">
-                <h3>{{ news.title }}</h3>
-            </a>
-            
-            <span style="font-weight:500;"><a href="{{ url_for('user.profile', username=news.author.username) }}">{{ news.author.username }}</a> | {{ news.written.strftime('%d.%m.%Y') }} | Комментарии: {{ news.comments_count() }}</span>
 
-            {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
-                <a href="{{ url_for('article.edit_post', id=news['id']) }}">
-                    <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
-                </a>
-            {% endif %}
-            
-            <p>{{ news.description }}</p>
-            
-            {% if news.pic != None%}
-                <img src="{{ news.pic }}" width="800">
-                <br>
-            {% endif %}
+{% include('messages.html') %}
 
-            {% if current_user.is_authenticated %}
-            <div class="like-container">
-                <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
-                    <button type="submit" style="background: none; border: none;">
-                        {% if news.is_liked_by(current_user) %}
-                        <i class="bi bi-heart-fill" style="color: red;"></i></button>
-                        {% else %}
-                        <i class="bi bi-heart" style="color: red;"></i></button>
-                        {% endif %}
-                </form>
-                <span>{{ news.likes_count()}}</span>
+{% for news in news_list%}
+
+<div class="card">
+    <div class="card-header">
+        <a href="{{ url_for('user.profile', username=news.author.username) }}" class="text-decoration-none">
+            <div class="d-flex align-items-center">
+              <img src="{{ news.author.avatar }}" alt="Аватар пользователя" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+              <span>{{ news.author.username }}</span>
             </div>
-            {% endif %}
-            <hr>
-        {% endfor %}
+          </a>
     </div>
-{% endblock %}    
+    <div class="card-body">
+      <a href="{{ news.url }}">
+        <h5 class="card-title">{{ news.title }}</h5>
+      </a>
+      <p class="card-text">{{ news.description }}</p>
+      {% if news.pic != None%}
+        <img src="{{ news.pic }}" width="800">
+        <br>
+      {% endif %}
+
+      {% if current_user.is_authenticated %}
+      <div class="like-container">
+        <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
+          <button type="submit" style="background: none; border: none;">
+            {% if news.is_liked_by(current_user) %}
+            <i class="bi bi-heart-fill" style="color: red;"></i>
+            {% else %}
+            <i class="bi bi-heart" style="color: red;"></i>
+            {% endif %}
+          </button>
+        </form>
+        <span>{{ news.likes_count() }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+{% endfor %}
+
+{% endblock %}   

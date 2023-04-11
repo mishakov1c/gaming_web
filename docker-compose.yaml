@@ -12,7 +12,7 @@ services:
     #  - elasticsearch  
     environment:
       DATABASE_URL: postgres://geek_space_admin:159753qwerty@db:5432/geek_space_db
-      FLASK_ENV: development   # <-- For debugging
+      FLASK_DEBUG: 1   # <-- For debugging
     
       
   db:
