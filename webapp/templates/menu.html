@@ -1,4 +1,4 @@
-<div class="container-fluid" style="background-color: #e3f2fd;">
+<div class="container-fluid" style="background-color: #e3f2fd; padding-left: 20px; padding-right: 20px;">
   <header class="d-flex flex-wrap justify-content-center py-2 mb-4 " >
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
       <span class="fs-4">Geek Space</span>
@@ -16,7 +16,7 @@
       </li>
       {% endif %}
       {% if not current_user.is_authenticated %}
-        <li>
+        <li style="padding-left: 8px;">
           <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='login'">Войти в систему</button></li>
         <li>
           <button type="button" class="btn btn-primary" onclick="window.location.href='register'">Регистрация</button></li>
