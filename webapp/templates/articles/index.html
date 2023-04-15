@@ -49,7 +49,7 @@
                         {% endif %}
                     </button>
                 </form>
-                <span>{{ news.likes_count() }}</span>
+                <span>{{ news.likes_count() }}</span> | <span>Комментарии: {{ news.comments_count() }}</span>
             </div>
         </div>
     {% endif %}
