@@ -33,7 +33,7 @@
             <p class="card-text">{{ news.description }}</p>
         </a>
         {% if news.pic != None %}
-            <img src="{{ news.pic }}" width="100%" style="max-height: 400px; object-fit: cover;">
+            <img src="{{ news.pic }}" width="100%" style="max-height: 600px; object-fit: cover;">
             <br>
         {% endif %}
     </div>
@@ -49,7 +49,7 @@
                         {% endif %}
                     </button>
                 </form>
-                <span>{{ news.likes_count() }}</span>
+                <span>{{ news.likes_count() }}</span> | <span>Комментарии: {{ news.comments_count() }}</span>
             </div>
         </div>
     {% endif %}
