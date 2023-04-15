@@ -4,44 +4,55 @@
 
 {% include('messages.html') %}
 
-{% for news in news_list%}
+{% for news in news_list %}
 
 <div class="card">
-    <div class="card-header">
-        <a href="{{ url_for('user.profile', username=news.author.username) }}" class="text-decoration-none">
-            <div class="d-flex align-items-center">
-              <img src="{{ news.author.avatar }}" alt="Аватар пользователя" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-              <span>{{ news.author.username }}</span>
+    <div class="card-header" style="padding: 0.8rem; border-bottom: none; background-color: white;">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('user.profile', username=news.author.username) }}" class="text-decoration-none">
+                <div class="d-flex align-items-center">
+                    <img src="{{ news.author.avatar }}" alt="Аватар пользователя" style="width: 30px; height: 30px; border-radius: 5px; margin-right: 10px;">
+                    <span>{{ news.author.username }}</span>
+                </div>
+            </a>
+            <div>
+                <span>{{ news.written.strftime('%d.%m.%Y') }}</span>
+                {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
+                <a href="{{ url_for('article.edit_post', id=news['id']) }}" class="text-decoration-none">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                {% endif %}
+                </div>
             </div>
-          </a>
+        </div>
+    <div class="card-body" style="padding-top: 0px; padding-bottom: 0px;">
+        <a href="{{ news.url }}">
+            <h5 class="card-title">{{ news.title }}</h5>
+        </a>
+        <a href="{{ news.url }}" class="text-decoration-none">
+            <p class="card-text">{{ news.description }}</p>
+        </a>
+        {% if news.pic != None %}
+            <img src="{{ news.pic }}" width="100%" style="max-height: 400px; object-fit: cover;">
+            <br>
+        {% endif %}
     </div>
-    <div class="card-body">
-      <a href="{{ news.url }}">
-        <h5 class="card-title">{{ news.title }}</h5>
-      </a>
-      <p class="card-text">{{ news.description }}</p>
-      {% if news.pic != None%}
-        <img src="{{ news.pic }}" width="800">
-        <br>
-      {% endif %}
-
-      {% if current_user.is_authenticated %}
-      <div class="like-container">
-        <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
-          <button type="submit" style="background: none; border: none;">
-            {% if news.is_liked_by(current_user) %}
-            <i class="bi bi-heart-fill" style="color: red;"></i>
-            {% else %}
-            <i class="bi bi-heart" style="color: red;"></i>
-            {% endif %}
-          </button>
-        </form>
-        <span>{{ news.likes_count() }}</span>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-
+    {% if current_user.is_authenticated %}
+        <div class="card-footer" style="padding-left: 10px; border-top: none; background-color: white;">
+            <div class="like-container">
+                <form action="{{ url_for('article.like_toggle', article_id=news.id) }}" method="post" style="display:inline;">
+                    <button type="submit" style="background: none; border: none;">
+                        {% if news.is_liked_by(current_user) %}
+                            <i class="bi bi-heart-fill" style="color: red;"></i>
+                        {% else %}
+                            <i class="bi bi-heart" style="color: red;"></i>
+                        {% endif %}
+                    </button>
+                </form>
+                <span>{{ news.likes_count() }}</span>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endfor %}
-
-{% endblock %}   
+{% endblock %}

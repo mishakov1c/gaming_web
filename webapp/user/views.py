@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required, login_user, logout_user
-
+from sqlalchemy import or_
 from webapp.user.decorators import admin_required
 from webapp.forms import LoginForm, RegisterForm
 from webapp.user.models import db, User
@@ -87,7 +87,7 @@ def process_login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter(User.username == form.username.data).first()
+        user = User.query.filter(or_(User.username == form.username.data, User.email == form.username.data)).first()
         if user and not user.is_active:
             flash('Действие учётной записи ограничено!')
             return redirect(url_for('user.login'))
@@ -126,6 +126,7 @@ def edit_profile():
         email = request.form['email']
         old_password = request.form['old_password']
         new_password = request.form['password']
+        new_avatar = request.form['avatar']
 
         if User.query.filter(User.username == username, User.id != current_user.id).first():
             flash('Этот логин уже занят. Пожалуйста, выберите другой.')
@@ -138,9 +139,12 @@ def edit_profile():
         if old_password and not current_user.check_password(old_password):
             flash('Неправильный старый пароль. Попробуйте еще раз')
             return redirect(url_for('user.edit_profile'))
-        
-        current_user.username = username
-        current_user.email = email
+        if username:
+            current_user.username = username
+        if email:
+            current_user.email = email
+        if new_avatar:
+            current_user.avatar = new_avatar
         if new_password and new_password != old_password:
             current_user.set_password(new_password)
             flash('Профиль успешно обновлен.')
