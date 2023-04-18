@@ -4,8 +4,10 @@
     
     <div class="row">
         {% include('messages.html') %}
+        <h3>Результаты поиска:</h3> <hr>
+        {% if results_list.count() %}
         {% for results in results_list%}
-            <h3>Результаты поиска:</h3> <hr>
+           
             <a href="{{ results.url }}">
                 <h3>{{ results.title }}</h3>
             </a>
@@ -40,6 +42,7 @@
             </div>
             <hr>
         {% endfor %}
+        {% endif %}
     </div>
 
 {% endblock %}
