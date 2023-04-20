@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 
 COPY . /usr/src/app/
-RUN mv -f webapp/config_docker.py webapp/config.py
+RUN mv -f webapp/config_app.py webapp/config.py
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
