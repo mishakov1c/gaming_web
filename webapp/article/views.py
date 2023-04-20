@@ -4,7 +4,6 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from webapp.article.forms import CommentForm
 from webapp.article.models import db, Articles, Comment, Like
-from webapp.config import MAIN_PAGE
 
 blueprint = Blueprint('article', __name__)
 likes_blueprint = Blueprint('likes', __name__)
@@ -15,21 +14,15 @@ def get_post(post_id):
     return post
 
 
-def new_post_url():
-    max_id = db.session.query(db.func.max(Articles.id)).first()[0]
-    new_id = 1 if max_id == None else max_id + 1
-    new_url = f'{MAIN_PAGE}{new_id}'
-
-    return new_url
-
 # Переход на главную страницу
 @blueprint.route('/')
+@blueprint.route('/index')
 def index():
     news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.written.desc())
     return render_template('articles/index.html', news_list = news_list, current_user=current_user)
 
 
-@blueprint.route('/<int:post_id>')
+@blueprint.route('/articles/<int:post_id>')
 def post(post_id):
     post = get_post(post_id)
     comment_form = CommentForm(article_id = post_id)
@@ -60,7 +53,6 @@ def create_post():
     author_id = current_user.id
     written = datetime.datetime.now()
     written_string = datetime.datetime.strftime(written, '%Y-%m-%d %H:%M:%S')
-    url = new_post_url()
 
     if request.method == 'POST':
         title = request.form['title']
@@ -72,18 +64,25 @@ def create_post():
         if not title:
             flash('Title is required!')
         else:
-            new_article = Articles(title=title, url=url, written=written,
+            new_article = Articles(title=title, written=written,
             author_id=author_id, text=content, description=description, edited=written, is_published=is_published, pic=pic)
             db.session.add(new_article)
             db.session.commit()
+
+            new_article.url = f'/articles/{new_article.id}'
+            db.session.commit()
         return redirect(url_for('article.index'))
 
-    return render_template('articles/create_post.html', author=current_user.username, written=written_string, url=url)
+    return render_template('articles/create_post.html', author=current_user.username, written=written_string)
 
 
-@blueprint.route('/<int:id>/edit_post', methods=('GET', 'POST'))
+# @blueprint.route('/<int:id>/edit_post', methods=('GET', 'POST'))
+@blueprint.route('/articles/<int:id>/edit_post', methods=('GET', 'POST'))
+@login_required
 def edit_post(id):
     post = get_post(id)
+    if post.author != current_user:
+        return redirect(url_for('article.index'))
     written = post.written
     written_string = datetime.datetime.strftime(written, '%Y-%m-%d %H:%M:%S')
     edited = datetime.date.strftime(post.edited, '%Y-%m-%d %H:%M:%S')
@@ -94,14 +93,11 @@ def edit_post(id):
         description = request.form['description']
         is_published = True if type(request.form.get('is_published')) == str else False
         pic = request.form['pic'] 
-        
-        url = request.form['url']
 
         if not title:
             flash('Title is required!')
         else:
             post.title = title
-            post.url = url
             post.written = written
             post.edited = datetime.datetime.now()
             post.text = content

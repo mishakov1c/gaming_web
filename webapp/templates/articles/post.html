@@ -4,7 +4,7 @@
 <h1>{% block title %} {{ post['title'] }} {% endblock %}</h1>
 <h6><a href="{{ url_for('user.profile', username=post.author.username) }}">{{ post.author.username }}</a>
     {{ post.written.strftime('%d.%m.%Y') }}
-    {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == post.author_id) %}
+    {% if current_user.is_authenticated and current_user.id == post.author_id %}
         <a href="{{ url_for('article.edit_post', id=post['id']) }}">
             <span class="badge text-bg-warning" style="margin-bottom:1em;">Edit</span>
         </a>
