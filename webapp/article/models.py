@@ -6,7 +6,7 @@ class Articles(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete = 'CASCADE'), index = True)
-    url = db.Column(db.String, unique=True, nullable=False)
+    url = db.Column(db.String, unique=True, nullable=True)
     written = db.Column(db.DateTime, nullable=False)
     edited = db.Column(db.DateTime, nullable=False)
     is_published = db.Column(db.Boolean, default=0, nullable=False)
