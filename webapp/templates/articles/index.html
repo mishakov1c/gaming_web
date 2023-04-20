@@ -17,7 +17,7 @@
             </a>
             <div>
                 <span>{{ news.written.strftime('%d.%m.%Y') }}</span>
-                {% if current_user.is_admin or (current_user.is_authenticated and current_user.id == news.author_id) %}
+                {% if current_user.is_authenticated and current_user == news.author %}
                 <a href="{{ url_for('article.edit_post', id=news['id']) }}" class="text-decoration-none">
                     <i class="bi bi-pencil"></i>
                 </a>
