@@ -4,6 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from webapp.article.forms import CommentForm
 from webapp.article.models import db, Articles, Comment, Like
+from webapp.config import POSTS_PER_PAGE
 
 blueprint = Blueprint('article', __name__)
 likes_blueprint = Blueprint('likes', __name__)
@@ -18,8 +19,13 @@ def get_post(post_id):
 @blueprint.route('/')
 @blueprint.route('/index')
 def index():
-    news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.written.desc())
-    return render_template('articles/index.html', news_list = news_list, current_user=current_user)
+    page = request.args.get('page', 1, type=int)
+    # news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.written.desc())
+    news_list = Articles.query.filter(Articles.is_published == True).order_by(Articles.written.desc()).paginate(page=page, per_page=POSTS_PER_PAGE, error_out=False)
+    next_url = url_for('article.index', page=news_list.next_num) if news_list.has_next else None
+    prev_url = url_for('article.index', page=news_list.prev_num) if news_list.has_prev else None
+
+    return render_template('articles/index.html', news_list = news_list, current_user=current_user, next_url=next_url, prev_url=prev_url, page=page)
 
 
 @blueprint.route('/articles/<int:post_id>')
