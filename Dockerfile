@@ -11,4 +11,5 @@ EXPOSE 5000
 
 ENV FLASK_APP=webapp
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+RUN pip install debugpy
+CMD ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000", "--no-reload", "--without-threads"]
